@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="background-color: rgb(50, 205, 66);">
+  <div class="container">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <br>
+    <button type="submit" class="btn btn-primary" onclick="window.location.href= '/register'">Sign Up</button>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    $('#loginForm').submit(function(e) {
+      e.preventDefault();
+
+      const username = $('#username').val();
+      const password = $('#password').val();
+
+      // Make API request to authenticate user
+      fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.token) {
+          // Store JWT token in localStorage
+          localStorage.setItem('authToken', data.token);
+          alert('Login successful!');
+
+          window.location.href = 'http://localhost:3003/chat';
+        } else {
+          alert('Invalid username or password');
+        }
+      })
+      .catch(error => {
+        console.error('Error during login:', error);
+        alert('An error occurred during login');
+      });
+    });
+  </script>
+</body>
+</html>

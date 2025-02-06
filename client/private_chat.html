@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Client</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script> -->
+</head>
+<body style="background-color:lightblue;">
+    <h1 style="background-color:limegreen;">Welcome To the Private Chat</h1>
+    <script>
+                        
+            const ioClient = io()
+            ioClient.on('connect', ()=>{
+                console.log('Connected to server')
+                ioClient.send('hi')
+            })
+
+            ioClient.on('message', (data) => {
+                    console.log(`Message from Server: ${data}`)
+            })
+
+            ioClient.on('chat_message', (data) => {
+                const container = document.getElementById('container');
+                const msg = `<p><b>${data.clientId}</b>: ${data.message}</p>`;
+                container.innerHTML += msg
+            })
+
+            function sendMessage() {
+                const txtmessage = document.getElementById('message');
+                const data = {
+                    from_user: 'From_Username',
+                    to_user: 'To_Username',
+                    message: txtmessage.value,
+                    datasent: Date()
+                }
+                
+                ioClient.emit('chat_message', data)
+            }
+
+            socket.on('disconnect', function () {
+                    console.log('disconnected');
+            });
+            
+    </script>
+        <a href="/groupchat">Group Chat</a>
+        </br>
+        <input type="text" id="message" name="message" placeholder="Enter your message" />
+        <button onclick="sendMessage()" style="background-color: rgb(14, 160, 232);">Sent Message</button>
+        <h3>Chat History</h3>
+        <div id="container" name="container">
+        
+        </div>
+
+</body>
+</html>
